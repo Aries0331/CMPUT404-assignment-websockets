@@ -257,6 +257,7 @@ function wsSetup() {
     socket = new WebSocket(url);
     socket.onopen = function() {
         //XXX: TODO What are you going to do here?
+        getxhr("http://" + host + "/world", updateWorld);
     };
     socket.onerror = function(msg) {
         debug("WebSocket Error:" + msg.data);
@@ -264,7 +265,12 @@ function wsSetup() {
     socket.onmessage = function(msg) {  
         try {
             debug("WebSocket Recv:" + msg.data);
-            //XXX: TODO What are you going to do here?            
+            //XXX: TODO What are you going to do here?  
+            message = JSON.parse(msg.data)
+            for (key in message) {
+                world[key] = message[key];        
+            }
+            drawNextFrame();
         } catch (e) {
             alert("socket on message: " + e);
         }
