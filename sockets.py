@@ -65,13 +65,22 @@ class Client:
     def __init__(self):
         self.queue = queue.Queue()
 
-    def put(self, msg):
-        self.queue.put_nowait(msg)
+    def put(self, v):
+        self.queue.put_nowait(v)
 
     def get(self):
         return self.queue.get()
 
 clients = list()
+
+
+def send_all(msg):
+    for client in clients:
+        client.put( msg )
+
+def send_all_json(obj):
+    send_all( json.dumps(obj) )
+
 
 def set_listener( entity, data ):
     ''' do something with the update ! '''
@@ -88,12 +97,11 @@ def hello():
 def read_ws(ws,client):
     '''A greenlet function that reads from the websocket and updates the world'''
     # XXX: TODO IMPLEMENT ME
-    while true:
+    while True:
         msg = ws.receive()
-        if msg is not None:
-            objs = json.load(msg)
-            for key in objs:
-                myWorld.set(key, objs[key])
+        if (msg is not None):
+            objs = json.loads(msg)
+            send_all_json(objs)
         else:
             break
     return None
@@ -103,7 +111,6 @@ def subscribe_socket(ws):
     '''Fufill the websocket URL of /subscribe, every update notify the
        websocket and read updates from the websocket '''
     # XXX: TODO IMPLEMENT ME
-    print "WTF"
     client = Client()
     clients.append(client)
     g = gevent.spawn(read_ws, ws, client)
