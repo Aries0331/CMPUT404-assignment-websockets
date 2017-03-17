@@ -76,16 +76,15 @@ clients = list()
 
 def send_all(msg):
     for client in clients:
-        client.put( msg )
+        client.put( msg)
 
 def send_all_json(obj):
-    send_all( json.dumps(obj) )
+    send_all(json.dumps(obj))
 
 
 def set_listener( entity, data ):
     ''' do something with the update ! '''
-    listener = {entity:data}
-    myWorld.add_set_listener(listener)
+    send_all_json({entity:data})
 
 myWorld.add_set_listener( set_listener )
         
@@ -101,10 +100,11 @@ def read_ws(ws,client):
         msg = ws.receive()
         if (msg is not None):
             objs = json.loads(msg)
-            send_all_json(objs)
+            for key in objs:
+                myWorld.set(key, objs[key])
         else:
             break
-    return None
+
 
 @sockets.route('/subscribe')
 def subscribe_socket(ws):
@@ -139,7 +139,7 @@ def update(entity):
     '''update the entities via this interface'''
     objs = flask_post_json()
     for key in objs:
-        myWorld.update(entity, key, objs[key])
+        myWorld.update(entity, key, objs(key))
     return flask.jsonify(myWorld.get(entity))
 
 @app.route("/world", methods=['POST','GET'])    
