@@ -51,11 +51,26 @@ function drawCircle(context,entity) {
         lineWidth = 3;
         var x = entity["x"];
         var y = entity["y"];
-        //moveTo(x,y);
+        moveTo(x,y);
         fillStyle = entity["colour"];
         strokeStyle = fillStyle;
-        arc(x, y, (entity["radius"])?entity["radius"]:10, 0, 2.0 * Math.PI, false);  
-        fill();                                
+        //arc(x, y, (entity["radius"])?entity["radius"]:10, 0, 2.0 * Math.PI, false);  
+        lineTo(x+10, y-20);
+        moveTo(x,y);
+        lineTo(x-20,y+5);
+        moveTo(x-20,y+5);
+        lineTo(x,y+10);
+        moveTo(x,y+10);
+        lineTo(x+10,y+30);
+        moveTo(x+10,y+30);
+        lineTo(x+20,y+10);
+        moveTo(x+20,y+10);
+        lineTo(x+40,y+5);
+        moveTo(x+40,y+5);
+        lineTo(x+20,y);
+        moveTo(x+20,y);
+        lineTo(x+10,y-20);
+        stroke();                                
     }
 }
 
@@ -238,7 +253,7 @@ mouse.mousedowners.push(function(x,y,clicked,e) {
 });
 
 mouse.mouseuppers.push(function(x,y,clicked,e) {
-    addEntityWithoutName({'x':x,'y':y,'colour':'purple','radius':14});
+    addEntityWithoutName({'x':x,'y':y,'colour':'green','radius':14});
 });
 
 mouse.mousedraggers.push(function(x,y,clicked,e) {
